@@ -1,0 +1,93 @@
+Command line: ./check-lhapdf-set-with-hoppet.py -pdf PDF4LHC21_40 -do-plots
+Timestamp: 2025-09-19 15:17:52
+PDF4LHC21_40 read succesfully with the following parameters extracted: 
+Number of loops: 3
+xmin: 1.01563e-06
+xmax: 1.0
+Qmin: 1.4001
+Qmax: 100000.0
+mc: 1.4
+mb: 4.75
+mt: 10000000.0
+Using exact NNLO nf thresholds: False, exact NNLO splitting functions: False
+Using Pole Mass Variable Flavour Number scheme with mc = 1.4, mb = 4.75, mt = 10000000.0
+Set yorder = 5, lnlnQorder = 4
+Starting Hoppet with ymax = 14.0 and dy = 0.05 and nloop = 3 and dlnlnQ = 0.0125 and order = -6
+Evolving PDF from Q0 = 1.4001 GeV with as(Q0) = 0.362736
+Using threshold for relative deviation: [95m0.50%[0m
+Relative deviation printed in parentheses: [91mred[0m if above, [92mgreen[0m if below
+
+
+                                                   Evaluating PDFs at Q = 100.0 GeV
+                          hoppet evolution with rel. deviation in parentheses |(hoppet - lhapdf)/hoppet|
+    [95mx            u-ubar                 d-dbar               2(ubr+dbr)               c+cbar                 gluon[0m
+1.0E-05  7.6767E-03 ([91m6.85E-03[0m)  5.0087E-03 ([91m8.80E-02[0m)  2.8417E+01 ([92m4.55E-06[0m)  1.2856E+01 ([92m1.19E-05[0m)  1.8355E+02 ([92m4.94E-06[0m) 
+1.0E-04  2.5097E-02 ([92m8.27E-05[0m)  1.8293E-02 ([92m1.47E-04[0m)  1.3855E+01 ([92m1.67E-05[0m)  5.8852E+00 ([92m2.47E-05[0m)  7.9621E+01 ([92m1.65E-05[0m) 
+1.0E-03  7.9989E-02 ([92m4.89E-05[0m)  4.6844E-02 ([92m2.99E-05[0m)  6.0748E+00 ([92m8.64E-06[0m)  2.3397E+00 ([92m7.56E-06[0m)  2.9343E+01 ([92m1.85E-05[0m) 
+1.0E-02  2.3420E-01 ([92m4.04E-05[0m)  1.2258E-01 ([92m5.34E-05[0m)  2.2151E+00 ([92m8.85E-05[0m)  6.9225E-01 ([92m1.46E-04[0m)  8.0040E+00 ([92m8.66E-05[0m) 
+1.0E-01  5.0958E-01 ([92m3.61E-05[0m)  2.4257E-01 ([92m6.10E-05[0m)  4.0924E-01 ([92m2.31E-05[0m)  6.9771E-02 ([92m1.69E-04[0m)  8.8052E-01 ([92m1.52E-05[0m) 
+3.0E-01  3.3012E-01 ([92m1.06E-04[0m)  1.2144E-01 ([92m1.31E-04[0m)  3.5759E-02 ([92m2.31E-04[0m)  9.1437E-03 ([92m2.07E-04[0m)  9.3664E-02 ([92m2.95E-04[0m) 
+5.0E-01  1.0095E-01 ([92m3.93E-04[0m)  2.3163E-02 ([92m2.52E-04[0m)  6.1307E-03 ([92m3.25E-04[0m)  2.5773E-03 ([92m1.03E-04[0m)  1.5044E-02 ([92m2.19E-03[0m) 
+7.0E-01  1.3709E-02 ([92m6.62E-04[0m)  1.4767E-03 ([92m1.67E-03[0m)  1.6574E-03 ([92m8.14E-04[0m)  5.4571E-04 ([92m1.12E-03[0m)  1.2933E-03 ([91m5.20E-03[0m) 
+9.0E-01  3.2570E-04 ([92m4.39E-03[0m)  5.5145E-08 ([92m1.94E-03[0m)  3.0937E-04 ([92m4.94E-03[0m)  4.5600E-05 ([92m3.55E-03[0m)  1.2855E-05 ([91m2.72E-02[0m) 
+
+Threshold transition checks:
+[95m    x              charm<mc                charm>mc               bottom<mb               bottom>mb[0m
+1.00e-05  -1.6578E-01 ([92m6.41E-04[0m)  -1.6578E-01 ([92m1.94E-07[0m)   0.0000E+00 ([92m0.00E+00[0m)  -1.9062E-01 ([91m6.41E-03[0m)
+1.00e-04  -1.1142E-01 ([92m6.29E-04[0m)  -1.1142E-01 ([92m9.41E-06[0m)   0.0000E+00 ([92m0.00E+00[0m)  -7.7685E-02 ([91m7.69E-03[0m)
+1.00e-03  -6.0052E-02 ([92m7.14E-04[0m)  -6.0052E-02 ([92m7.38E-08[0m)   0.0000E+00 ([92m0.00E+00[0m)  -1.7378E-02 ([91m1.33E-02[0m)
+1.00e-02  -1.3606E-02 ([92m6.84E-04[0m)  -1.3606E-02 ([92m3.06E-05[0m)   0.0000E+00 ([92m0.00E+00[0m)   3.3402E-03 ([91m1.54E-02[0m)
+1.00e-01   4.0015E-03 ([92m1.06E-03[0m)   4.0015E-03 ([92m6.40E-06[0m)   0.0000E+00 ([92m0.00E+00[0m)   1.8887E-03 ([92m7.00E-04[0m)
+3.00e-01   3.4097E-03 ([92m6.26E-05[0m)   3.4097E-03 ([92m6.20E-05[0m)   0.0000E+00 ([92m0.00E+00[0m)   2.9176E-04 ([92m5.15E-04[0m)
+5.00e-01   2.4790E-03 ([92m4.80E-05[0m)   2.4790E-03 ([92m5.22E-05[0m)   0.0000E+00 ([92m0.00E+00[0m)   7.9709E-05 ([92m1.45E-03[0m)
+7.00e-01   1.1993E-03 ([92m7.23E-05[0m)   1.1993E-03 ([92m1.94E-05[0m)   0.0000E+00 ([92m0.00E+00[0m)   1.1344E-05 ([92m2.33E-03[0m)
+9.00e-01   1.7910E-04 ([92m1.32E-04[0m)   1.7910E-04 ([92m1.05E-06[0m)   0.0000E+00 ([92m0.00E+00[0m)   9.8459E-08 ([91m2.72E-02[0m)
+
+αS comparison:
+[95m      Q            HOPPET        LHAPDF    |rel. dev.|[0m
+     1.0000      0.467932      0.441814  [91m  5.5815e-02[0m
+     1.4001      0.362736      0.362736  [92m  0.0000e+00[0m
+     3.0000      0.253467      0.253462  [92m  1.9986e-05[0m
+     4.7501      0.216054      0.216057  [92m  1.8000e-05[0m
+     5.0000      0.212908      0.212824  [92m  3.9392e-04[0m
+    50.0000      0.129814      0.129815  [92m  7.4145e-06[0m
+    91.1876      0.118000      0.118000  [92m  6.2802e-06[0m
+   100.0000      0.116378      0.116379  [92m  9.3436e-06[0m
+   500.0000      0.093968      0.093967  [92m  3.9901e-06[0m
+  1000.0000      0.086810      0.086811  [92m  7.7822e-06[0m
+100000.0000      0.057799      0.057799  [92m  1.6083e-06[0m
+
+Filling hoppet and lhapdf arrays...
+
+Summary of points within a certain deviation from hoppet (across all flavors):
+Kinematic range: xmin =  1e-05 , xmax =  0.9 , Qmin =  1.4001 GeV, Qmax =  28000.0 GeV
+Bin range      Percentage
+0.00% - 0.01%  [92m   74.44%[0m
+0.01% - 0.10%  [92m   20.35%[0m
+0.10% - 0.20%  [92m    2.29%[0m
+0.20% - 0.50%  [92m    1.68%[0m
+0.50% - 1.00%  [91m    0.62%[0m
+1.00% - 2.00%  [91m    0.29%[0m
+2.00% - 5.00%  [91m    0.16%[0m
+5.00% - 10.00% [91m    0.11%[0m
+10.00% -       [91m    0.08%[0m
+
+Fraction of points with deviation >= [95m0.50%[0m in each Q region (PDFs):
+  Q < mc (1.40)                : [92m  0.00%[0m [92mOK[0m
+  mc ≤ Q < mb (4.75)           : [91m  1.20%[0m [93mCHECK PLOTS[0m
+  mb ≤ Q < mt (10000000.00)    : [91m  1.28%[0m [93mCHECK PLOTS[0m
+  Q ≥ mt (10000000.00)         : [92m  0.00%[0m [92mOK[0m
+
+Fraction of points with deviation >= [95m0.50%[0m in each Q region (αS):
+  Q < mc (1.40)                : [92m  0.00%[0m [92mOK[0m
+  mc ≤ Q < mb (4.75)           : [92m  0.00%[0m [92mOK[0m
+  mb ≤ Q < mt (10000000.00)    : [92m  0.00%[0m [92mOK[0m
+  Q ≥ mt (10000000.00)         : [92m  0.00%[0m [92mOK[0m
+
+Plotting deviation heatmaps for PDF4LHC21_40 with nbins = 100. This could take a while... (disable with -do-plots False).
+
+Plots saved to PDF file: [95mPDF4LHC21_40_Q01.4001_hoppet_check.pdf[0m
+Output saved to file:    [95mPDF4LHC21_40_Q01.4001_hoppet_check.txt[0m
+
+Total runtime: 6.59 seconds.
+

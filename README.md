@@ -37,11 +37,11 @@ screen and saved in `PDF4LHC21_40_Q01.4001_hoppet_check.txt`.
 
 The plots can be found in `PDF4LHC21_40_Q01.4001_hoppet_check.pdf`.
 The heatmaps should be green -- if not then there are regions with
-deviations. 
+deviations. See e.g. [here](example/PDF4LHC21_40_Q01.4001_hoppet_check.pdf#page=6) for a plot of the relative deviation from hoppet of the gluon. 
 
-Below is the plot of the gluon from PDF4LHC_21 as obtained from the
-script:
+Both the `.txt` and `.pdf` files can be found in the [example](example/) directory.
 
-![PDF Preview](example/PDF4LHC21_40_Q01.4001_hoppet_check.pdf#page=6)
-
-<embed src="example/PDF4LHC21_40_Q01.4001_hoppet_check.pdf#page=6" type="application/pdf" width="600" height="400">
+## Contact and bugs
+Please get in touch on
+[alexander.karlberg@cern.ch](mailto:alexander.karlberg@cern.ch) for
+any queries or bug reports (or directly on gitHub).

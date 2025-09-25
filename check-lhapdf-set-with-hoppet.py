@@ -162,7 +162,8 @@ def load_lhapdf_start_evolve_hoppet(args):
     mc = p_lhapdf.quarkThreshold(4)
     mb = p_lhapdf.quarkThreshold(5)
     mt = p_lhapdf.quarkThreshold(6)
-
+    if(p_lhapdf.hasFlavor(6) == False): mt = 2*Qmax# If no top is defined set it to a high value
+    
     # By default we evolve from Qmin but -Q0 can be specified by the user
     Q0 = max(args.Q0, Qmin)
     if args.Q0_just_above_mc:
@@ -224,6 +225,17 @@ def load_lhapdf_start_evolve_hoppet(args):
     print(f"Set yorder = {args.yorder}, lnlnQorder = {args.lnlnQorder}")
     print(f"Starting Hoppet with ymax = {ymax} and dy = {dy} and nloop = {nloop} and dlnlnQ = {dlnlnQ} and order = {args.order}")
     hp.StartExtended(ymax, dy, Qmin, Qmax, dlnlnQ, nloop, args.order, hp.factscheme_MSbar)
+
+    # If the PDF uses a truncated solution to the renormalization
+    # group equation then reading the coupling at the low scale can
+    # lead to differences
+    if(args.alphasQ0 > 0.0): 
+        asQ0 = p_lhapdf.alphasQ(args.alphasQ0)
+        hp.SetCoupling(asQ0, args.alphasQ0, nloop)
+        asQ0 = hp.AlphaS(Q0)
+        #hp.DeleteAll()
+
+
     
     # Bit of a workaround right now that we always call the evolution
     # routine, because otherwise no coupling gets set up.
@@ -248,6 +260,7 @@ def get_commandline():
     parser.add_argument('-prec-threshold', type=float, default=5e-3, help='Threshold for relative deviation, used for colour coding and summary analysis (default: 5e-3)')
     parser.add_argument('-nbins', type=int, default=100, help='Number of bins for heatmap in log(x) and log(Q) (default: 100)')
     parser.add_argument('-Q0', type=float, default=1.0, help='Initial Q0 value (default: Qmin from LHAPDF)')
+    parser.add_argument('-alphasQ0', type=float, default=-1.0, help='Initial Q0 value to be used in alphas, by default it uses Q0')
     parser.add_argument('-Q0-just-above-mc', action='store_true', help='Set Q0 just above mc')
     parser.add_argument('-Q0-just-above-mb', action='store_true', help='Set Q0 just above mb')
     parser.add_argument("-FFN", type=int, default=-1, help="Fixed flavour number scheme with nf=FFN. Negative values will result in the variable flavour number scheme being used (default: -1)")

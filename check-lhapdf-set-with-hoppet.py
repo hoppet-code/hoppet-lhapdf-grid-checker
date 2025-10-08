@@ -142,9 +142,9 @@ def main():
 
 def load_lhapdf_start_evolve_hoppet(args):
     # Load the pdf from LHAPDF
-    pdf = args.pdf
-    hl = hp.lhapdf.hoppet_lhapdf(args.pdf, 0)
+    hl = hp.lhapdf.hoppet_lhapdf(args.pdf, 0) # This object contains the LHAPDF object and a bunch of its meta data.
 
+    # Check if there is a photon PDF
     if hl.QED: 
         print("Photon PDF detected. Turning on QED evolution at O(alpha).") 
         hp.SetQED(True, args.qcdqed, False)
@@ -175,13 +175,13 @@ def load_lhapdf_start_evolve_hoppet(args):
     asQ0 = hl.pdf.alphasQ(Q0)
 
     # Define output name
-    output = f"{pdf}_Q0{Q0}_hoppet_check"
+    output = f"{args.pdf}_Q0{Q0}_hoppet_check"
     sys.stdout = Tee(f"{output}.log")
     print(f"Command line: {' '.join(sys.argv)}")
     print(f"Timestamp: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
     # Print some info to the screen
-    print(f"{pdf} read succesfully with the following parameters extracted: \nNumber of loops: {hl.nloop}\nxmin: {hl.xmin}\nxmax: {hl.xmax}\nQmin: {hl.Qmin}\nQmax: {hl.Qmax}\nmc: {hl.mc}\nmb: {hl.mb}\nmt: {hl.mt}")
+    print(f"{args.pdf} read succesfully with the following parameters extracted: \nNumber of loops: {hl.nloop}\nxmin: {hl.xmin}\nxmax: {hl.xmax}\nQmin: {hl.Qmin}\nQmax: {hl.Qmax}\nmc: {hl.mc}\nmb: {hl.mb}\nmt: {hl.mt}")
 
     # Now we start hoppet
     dy = args.dy
@@ -206,9 +206,7 @@ def load_lhapdf_start_evolve_hoppet(args):
             sys.exit(1)
         print(f"N3LO splitting function approximation: {args.n3lo_splitting}")
         
-    # Right now I can't see a way to find the scheme in the LHAPDF
-    # interface. For now we assume it is variable unless the user
-    # specifies FFN on the commandline
+    # Set the flavour scheme
     if args.FFN > 0:
         hp.SetFFN(args.FFN)
         print(f"Using Fixed Flavour Number scheme with nf = {args.FFN}")
@@ -219,7 +217,6 @@ def load_lhapdf_start_evolve_hoppet(args):
         hp.SetPoleMassVFN(hl.mc, hl.mb, hl.mt)
         print(f"Using Pole Mass Variable Flavour Number scheme with mc = {hl.mc}, mb = {hl.mb}, mt = {hl.mt}")
 
-    #hp.Start(dy, nloop)
     ymax = float(math.ceil(np.log(1.0/hl.xmin)))
     if ymax > 15.0:
         dlnlnQ = dy/8.0

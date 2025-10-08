@@ -147,7 +147,7 @@ def load_lhapdf_start_evolve_hoppet(args):
 
     if hl.QED: 
         print("Photon PDF detected. Turning on QED evolution at O(alpha).") 
-        hp.SetQED(True, False, False)
+        hp.SetQED(True, args.qcdqed, False)
 
     # Now that we have the PDF we define the interface as needed by hoppet
     def lhapdf_interface(x, Q):
@@ -269,6 +269,7 @@ def get_commandline():
     parser.add_argument('-Q0-just-above-mb', action='store_true', help='Set Q0 just above mb')
     parser.add_argument("-FFN", type=int, default=-1, help="Fixed flavour number scheme with nf=FFN. Negative values will result in the variable flavour number scheme being used (default: -1)")
     parser.add_argument("-topmass", type=float, default=-1.0, help="Top quark mass to be used in the pole mass VFN scheme (default: 173.0 GeV)")
+    parser.add_argument("-qcdqed", type=lambda x: x.lower() not in ['false','0','no'], default=False, nargs='?', const=True, help='Use QCD+QED evolution (default: False)')
     parser.add_argument('-exact-nnlo-nf', type=lambda x: x.lower() not in ['false','0','no'], default=False, nargs='?', const=True, help='Use exact nf thresholds at NNLO (default: False)')
     parser.add_argument('-exact-nnlo-splitting', type=lambda x: x.lower() not in ['false','0','no'], default=False, nargs='?', const=True, help='Use exact splitting functions at NNLO (default: False)')
     parser.add_argument('-n3lo-splitting', type=str, default ="2410", help='N3LO splitting function approximation (see n3lo_splitting_approximation flag in dglap_choices.f90 in hoppet for explanation) (2310, 2404, 2410 (default))')
@@ -295,7 +296,7 @@ def print_deviations_plot_heatmaps(args, hl, Q0, threshold, output, hoppet_ver, 
     else:
         info_str = f"PDF: {args.pdf}   Q0: {Q0:.3f} GeV  dy: {args.dy} fixed flavour number scheme nf: {hl.nf}"
         if(args.blind): info_str = f"PDF: ???  Q0: {Q0:.3f} GeV  dy: {args.dy} fixed flavour number scheme nf: {hl.nf}"
-    xticks = generate_xticks(hl.xmin, hl.xmax)
+    xticks = generate_xticks(xmin, xmax)
     bounds = [0.0, 1e-4, 1e-3, 2e-3, 5e-3, 1e-2, 2e-2, 5e-2, 1e-1, 1e0]
     colors = ['darkgreen', 'green', 'limegreen', 'greenyellow', 'yellow', 'orange', 'red', 'brown', 'black']
     #colors = ['darkgreen', 'green', 'darkblue', 'blue', 'yellow', 'orange', 'red', 'brown', 'black']
@@ -455,6 +456,40 @@ def print_deviations_plot_heatmaps(args, hl, Q0, threshold, output, hoppet_ver, 
         for tmpfile in mass_tmpfiles:
             merger.append(tmpfile)
 
+    # Add photon plot if QED is enabled
+    if hl.QED:
+        # Compute photon deviations (not precomputed in the main arrays)
+        photon_deviation = np.zeros((len(Qvals), len(xvals)))
+        for i, Q in enumerate(Qvals):
+            for j, x in enumerate(xvals):
+                hoppet_photon = hp.Eval(x, Q)[hp.iflv_photon]
+                lhapdf_photon = hl.pdf.xfxQ(22, x, Q)
+                if abs(hoppet_photon) > 0:
+                    rel_diff = abs((lhapdf_photon - hoppet_photon) / hoppet_photon)
+                else:
+                    rel_diff = 0.0
+                photon_deviation[i, j] = rel_diff
+        
+        plt.figure(figsize=(8, 6))
+        X, Y = np.meshgrid(xvals, Qvals)
+        plt.pcolormesh(X, Y, photon_deviation, norm=norm, shading='auto', cmap=cmap)
+        cbar = plt.colorbar(label='|(hoppet - lhapdf) / hoppet|', boundaries=bounds, ticks=bounds)
+        cbar.ax.set_yticklabels([percent_label(b) for b in bounds])
+        plt.xscale('log')
+        plt.yscale('log')
+        plt.xlabel('x')
+        plt.ylabel('Q [GeV]')
+        plt.title('|Rel. deviation| for photon')
+        plt.figtext(0.5, 0.01, info_str, ha='center', va='bottom', fontsize=10, color='grey', alpha=0.5)
+        plt.figtext(0.98, 0.98, f"hoppet v{hoppet_ver}", ha='right', va='top', fontsize=10, color='grey', alpha=0.5)
+        plt.xticks(xticks, [format_xtick(tick) for tick in xticks])
+        plt.tight_layout()
+        tmpfile_photon = f"{output}_photon.pdf"
+        with PdfPages(tmpfile_photon) as pdf_pages:
+            pdf_pages.savefig()
+        plt.close()
+        merger.append(tmpfile_photon)
+    
     # Add plot for alphas relative deviation
     Qvals_alpha_plot = np.logspace(np.log10(Qmin), np.log10(Qmax), nbins*10)
     alphas_hoppet = np.array([hp.AlphaS(Q) for Q in Qvals_alpha_plot])

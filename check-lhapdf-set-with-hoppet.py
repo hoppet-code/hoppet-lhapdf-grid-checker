@@ -40,10 +40,10 @@ def main():
     args = get_commandline()
 
     matplotlib.use('Agg')  # Use non-interactive backend for multiprocessing safety
-    hoppet_ver = version() # Hoppet version for plots
+    hoppet_ver = hp.version() # Hoppet version for plots
 
     # This routine loads an lhapdf set at its initial scale (unless otherwise specified) and evolves it with hoppet.
-    p_lhapdf, Q0, output, mc, mb, mt, xmin, xmax, Qmin, Qmax = load_lhapdf_start_evolve_hoppet(args)
+    p_lhapdf, Q0, output, mc, mb, mt, xmin, xmax, Qmin, Qmax, VFN, nf, QED = load_lhapdf_start_evolve_hoppet(args)
 
     # Evaluate the PDFs at some x values and print them
     xvals = [1e-5,1e-4,1e-3,1e-2,0.1,0.3,0.5,0.7,0.9]
@@ -87,37 +87,38 @@ def main():
         print(out_str)
 
     # Threshold transition checks for mc and mb
-    print("\nThreshold transition checks:")
-    header = f"{PURPLE}{'x':>5}  {'charm<mc':>20}  {'charm>mc':>22}  {'bottom<mb':>22}  {'bottom>mb':>22}{END}"
-    print(header)
-    for x in xvals:
-        # charm
-        hoppet_c_below = hp.Eval(x, mc - eps)[6 + 4]
-        lhapdf_c_below = p_lhapdf.xfxQ(4, x, mc - eps)
-        rel_c_below = abs((lhapdf_c_below - hoppet_c_below) / hoppet_c_below) if abs(hoppet_c_below) > 0 else 0.0
-        color_c_below = RED if rel_c_below > threshold else GREEN
-        charm_below_str = f"{hoppet_c_below:11.4E} ({color_c_below}{rel_c_below:7.2E}{END})"
+    if VFN:
+        print("\nThreshold transition checks:")
+        header = f"{PURPLE}{'x':>5}  {'charm<mc':>20}  {'charm>mc':>22}  {'bottom<mb':>22}  {'bottom>mb':>22}{END}"
+        print(header)
+        for x in xvals:
+            # charm
+            hoppet_c_below = hp.Eval(x, mc - eps)[6 + 4]
+            lhapdf_c_below = p_lhapdf.xfxQ(4, x, mc - eps)
+            rel_c_below = abs((lhapdf_c_below - hoppet_c_below) / hoppet_c_below) if abs(hoppet_c_below) > 0 else 0.0
+            color_c_below = RED if rel_c_below > threshold else GREEN
+            charm_below_str = f"{hoppet_c_below:11.4E} ({color_c_below}{rel_c_below:7.2E}{END})"
 
-        hoppet_c_above = hp.Eval(x, mc + eps)[6 + 4]
-        lhapdf_c_above = p_lhapdf.xfxQ(4, x, mc + eps)
-        rel_c_above = abs((lhapdf_c_above - hoppet_c_above) / hoppet_c_above) if abs(hoppet_c_above) > 0 else 0.0
-        color_c_above = RED if rel_c_above > threshold else GREEN
-        charm_above_str = f"{hoppet_c_above:11.4E} ({color_c_above}{rel_c_above:7.2E}{END})"
+            hoppet_c_above = hp.Eval(x, mc + eps)[6 + 4]
+            lhapdf_c_above = p_lhapdf.xfxQ(4, x, mc + eps)
+            rel_c_above = abs((lhapdf_c_above - hoppet_c_above) / hoppet_c_above) if abs(hoppet_c_above) > 0 else 0.0
+            color_c_above = RED if rel_c_above > threshold else GREEN
+            charm_above_str = f"{hoppet_c_above:11.4E} ({color_c_above}{rel_c_above:7.2E}{END})"
 
-        # bottom
-        hoppet_b_below = hp.Eval(x, mb - eps)[6 + 5]
-        lhapdf_b_below = p_lhapdf.xfxQ(5, x, mb - eps)
-        rel_b_below = abs((lhapdf_b_below - hoppet_b_below) / hoppet_b_below) if abs(hoppet_b_below) > 0 else 0.0
-        color_b_below = RED if rel_b_below > threshold else GREEN
-        bottom_below_str = f"{hoppet_b_below:11.4E} ({color_b_below}{rel_b_below:7.2E}{END})"
+            # bottom
+            hoppet_b_below = hp.Eval(x, mb - eps)[6 + 5]
+            lhapdf_b_below = p_lhapdf.xfxQ(5, x, mb - eps)
+            rel_b_below = abs((lhapdf_b_below - hoppet_b_below) / hoppet_b_below) if abs(hoppet_b_below) > 0 else 0.0
+            color_b_below = RED if rel_b_below > threshold else GREEN
+            bottom_below_str = f"{hoppet_b_below:11.4E} ({color_b_below}{rel_b_below:7.2E}{END})"
 
-        hoppet_b_above = hp.Eval(x, mb + eps)[6 + 5]
-        lhapdf_b_above = p_lhapdf.xfxQ(5, x, mb + eps)
-        rel_b_above = abs((lhapdf_b_above - hoppet_b_above) / hoppet_b_above) if abs(hoppet_b_above) > 0 else 0.0
-        color_b_above = RED if rel_b_above > threshold else GREEN
-        bottom_above_str = f"{hoppet_b_above:11.4E} ({color_b_above}{rel_b_above:7.2E}{END})"
+            hoppet_b_above = hp.Eval(x, mb + eps)[6 + 5]
+            lhapdf_b_above = p_lhapdf.xfxQ(5, x, mb + eps)
+            rel_b_above = abs((lhapdf_b_above - hoppet_b_above) / hoppet_b_above) if abs(hoppet_b_above) > 0 else 0.0
+            color_b_above = RED if rel_b_above > threshold else GREEN
+            bottom_above_str = f"{hoppet_b_above:11.4E} ({color_b_above}{rel_b_above:7.2E}{END})"
 
-        print(f"{x:8.2e}  {charm_below_str:>20}  {charm_above_str:>20}  {bottom_below_str:>20}  {bottom_above_str:>20}")
+            print(f"{x:8.2e}  {charm_below_str:>20}  {charm_above_str:>20}  {bottom_below_str:>20}  {bottom_above_str:>20}")
 
     # Print alphas comparison between HOPPET and LHAPDF
     print("\nαS comparison:")
@@ -131,7 +132,7 @@ def main():
         print(f"{Qval:11.4f}  {alphas_hoppet:12.6f}  {alphas_lhapdf:12.6f}  {color}{rel_dev:12.4e}{END}")
     print("")
 
-    print_deviations_plot_heatmaps(args, Q0, mc, mb, mt, threshold, output, hoppet_ver, p_lhapdf, hp, max(xmin,args.xmin), min(xmax,args.xmax), Qmin, min(Qmax,args.Qmax), args.nbins, args.do_plots)
+    print_deviations_plot_heatmaps(args, Q0, mc, mb, mt, threshold, output, hoppet_ver, p_lhapdf, hp, max(xmin,args.xmin), min(xmax,args.xmax), Qmin, min(Qmax,args.Qmax), VFN, nf, QED, args.nbins, args.do_plots)
     print("Output saved to file:   ", f"{PURPLE}{output}.txt{END}")
     print("")
 
@@ -141,18 +142,34 @@ def main():
 def load_lhapdf_start_evolve_hoppet(args):
     # Load the pdf from LHAPDF
     pdf = args.pdf
-    p_lhapdf = lhapdf.mkPDF(args.pdf, 0)
+    p_lhapdf = lhapdf.mkPDF(args.pdf, 0) # The actual PDF object
+    pdfinfo = p_lhapdf.info() # Object containing the metadata info
+
+    # Check for a photon PDF. This seems to be problematic, since it
+    # then expects a photon in the lhapdf_interface. Will have to
+    # think about that...
+    #
+    QED = False
+    if p_lhapdf.hasFlavor(22): 
+        print("Photon PDF detected. Turning on QED evolution at O(alpha).") 
+        hp.SetQED(True, False, False)
+        QED = True
 
     # Now that we have the PDF we define the interface as needed by hoppet
     def lhapdf_interface(x, Q):
-        pdf = np.zeros(13)
         lhapdf = p_lhapdf.xfxQ(None, x, Q)
-        # Map HOPPET indices to LHAPDF PIDs
-        pid_map = [ -6, -5, -4, -3, -2, -1, 21, 1, 2, 3, 4, 5, 6 ]
+        if not QED:
+            pdf = np.zeros(13)
+            # Map HOPPET indices to LHAPDF PIDs
+            pid_map = [ -6, -5, -4, -3, -2, -1, 21, 1, 2, 3, 4, 5, 6 ]
+        else:
+            pdf = np.zeros(18) # Need to include leptons even if they are not there
+            # Map HOPPET indices to LHAPDF PIDs including photon
+            pid_map = [ -6, -5, -4, -3, -2, -1, 21, 1, 2, 3, 4, 5, 6, -123456, 22 ]
         for i, pid in enumerate(pid_map):
-            pdf[i] = lhapdf.get(pid, 0.0)
+            if pid >= -6:pdf[i] = lhapdf.get(pid, 0.0)
         return pdf
-
+        
     # Get some information from the PDF like order in QCD, masses etc.
     nloop = p_lhapdf.orderQCD + 1 # LHAPDF starts at 0
     xmin = p_lhapdf.xMin
@@ -163,7 +180,17 @@ def load_lhapdf_start_evolve_hoppet(args):
     mb = p_lhapdf.quarkThreshold(5)
     mt = p_lhapdf.quarkThreshold(6)
     if(p_lhapdf.hasFlavor(6) == False): mt = 2*Qmax# If no top is defined set it to a high value
-    
+    if args.topmass > 0.0: mt = args.topmass # Override top mass if specified on commandline
+    if(pdfinfo.get_entry("FlavorScheme") == "variable"):
+        nf = -1 # Not used in VFN but need to define it
+        print("Using variable flavour scheme")
+        VFN = True
+    else:
+        nf = int(pdfinfo.get_entry("NumFlavors"))
+        print(f"Using fixed flavour scheme with NF = {nf}")
+        VFN = False
+
+
     # By default we evolve from Qmin but -Q0 can be specified by the user
     Q0 = max(args.Q0, Qmin)
     if args.Q0_just_above_mc:
@@ -210,6 +237,9 @@ def load_lhapdf_start_evolve_hoppet(args):
     if args.FFN > 0:
         hp.SetFFN(args.FFN)
         print(f"Using Fixed Flavour Number scheme with nf = {args.FFN}")
+    elif not VFN:
+        hp.SetFFN(nf)
+        print(f"Using Fixed Flavour Number scheme with nf = {nf}")
     else:
         hp.SetPoleMassVFN(mc,mb,mt)
         print(f"Using Pole Mass Variable Flavour Number scheme with mc = {mc}, mb = {mb}, mt = {mt}")
@@ -234,8 +264,6 @@ def load_lhapdf_start_evolve_hoppet(args):
         hp.SetCoupling(asQ0, args.alphasQ0, nloop)
         asQ0 = hp.AlphaS(Q0)
         #hp.DeleteAll()
-
-
     
     # Bit of a workaround right now that we always call the evolution
     # routine, because otherwise no coupling gets set up.
@@ -246,8 +274,8 @@ def load_lhapdf_start_evolve_hoppet(args):
     else:
         print(f"Evolving PDF from Q0 = {Q0} GeV with as(Q0) = {asQ0}")
         hp.Evolve(asQ0, Q0, nloop, 1.0, lhapdf_interface, Q0)
-
-    return p_lhapdf, Q0, output, mc, mb, mt, xmin, xmax, Qmin, Qmax # This is a bit strange, but the only way to make sure that we first set it inside this function and then return it
+    print("Initialisation done.\n")
+    return p_lhapdf, Q0, output, mc, mb, mt, xmin, xmax, Qmin, Qmax, VFN, nf, QED # This is a bit strange, but the only way to make sure that we first set it inside this function and then return it
 
 def get_commandline():
     # Get commandline
@@ -264,6 +292,7 @@ def get_commandline():
     parser.add_argument('-Q0-just-above-mc', action='store_true', help='Set Q0 just above mc')
     parser.add_argument('-Q0-just-above-mb', action='store_true', help='Set Q0 just above mb')
     parser.add_argument("-FFN", type=int, default=-1, help="Fixed flavour number scheme with nf=FFN. Negative values will result in the variable flavour number scheme being used (default: -1)")
+    parser.add_argument("-topmass", type=float, default=-1.0, help="Top quark mass to be used in the pole mass VFN scheme (default: 173.0 GeV)")
     parser.add_argument('-exact-nnlo-nf', type=lambda x: x.lower() not in ['false','0','no'], default=False, nargs='?', const=True, help='Use exact nf thresholds at NNLO (default: False)')
     parser.add_argument('-exact-nnlo-splitting', type=lambda x: x.lower() not in ['false','0','no'], default=False, nargs='?', const=True, help='Use exact splitting functions at NNLO (default: False)')
     parser.add_argument('-n3lo-splitting', type=str, default ="2410", help='N3LO splitting function approximation (see n3lo_splitting_approximation flag in dglap_choices.f90 in hoppet for explanation) (2310, 2404, 2410 (default))')
@@ -280,12 +309,16 @@ def get_commandline():
 
 # Plotting script for 2D heatmaps. Plots the relative deviations
 # between lhapdf and hoppet, using hoppet as the baseline. 
-def print_deviations_plot_heatmaps(args, Q0, mc, mb, mt, threshold, output, hoppet_ver, p_lhapdf, hp, xmin, xmax, Qmin, Qmax, nbins, do_plots):
+def print_deviations_plot_heatmaps(args, Q0, mc, mb, mt, threshold, output, hoppet_ver, p_lhapdf, hp, xmin, xmax, Qmin, Qmax, VFN, nf, QED, nbins, do_plots):
     xvals = np.logspace(np.log10(xmin), np.log10(xmax), nbins)
     Qvals = np.logspace(np.log10(Qmin), np.log10(Qmax), nbins)
     flavors = range(-5, 6)  # -5 to 5, gluon is 0
-    info_str = f"PDF: {args.pdf}   Q0: {Q0:.3f} GeV  dy: {args.dy}   mc: {mc:.3f} GeV  mb: {mb:.3f} GeV"
-    if(args.blind): info_str = f"PDF: ???  Q0: {Q0:.3f} GeV  dy: {args.dy}   mc: {mc:.3f} GeV  mb: {mb:.3f} GeV"
+    if VFN:
+        info_str = f"PDF: {args.pdf}   Q0: {Q0:.3f} GeV  dy: {args.dy}   mc: {mc:.3f} GeV  mb: {mb:.3f} GeV"
+        if(args.blind): info_str = f"PDF: ???  Q0: {Q0:.3f} GeV  dy: {args.dy}   mc: {mc:.3f} GeV  mb: {mb:.3f} GeV"
+    else:
+        info_str = f"PDF: {args.pdf}   Q0: {Q0:.3f} GeV  dy: {args.dy} fixed flavour number scheme nf: {nf}"
+        if(args.blind): info_str = f"PDF: ???  Q0: {Q0:.3f} GeV  dy: {args.dy} fixed flavour number scheme nf: {nf}"
     xticks = generate_xticks(xmin, xmax)
     bounds = [0.0, 1e-4, 1e-3, 2e-3, 5e-3, 1e-2, 2e-2, 5e-2, 1e-1, 1e0]
     colors = ['darkgreen', 'green', 'limegreen', 'greenyellow', 'yellow', 'orange', 'red', 'brown', 'black']
@@ -300,7 +333,7 @@ def print_deviations_plot_heatmaps(args, Q0, mc, mb, mt, threshold, output, hopp
     lhapdf_all = np.zeros((len(Qvals), len(xvals), 13))
     for i, Q in enumerate(Qvals):
         for j, x in enumerate(xvals):
-            hoppet_all[i, j, :] = hp.Eval(x, Q)
+            hoppet_all[i, j, :] = hp.Eval(x, Q)[:13]
             lhapdf_dict = p_lhapdf.xfxQ(None, x, Q)
             for flavor in range(-6, 7):
                 if flavor == 0:
@@ -411,39 +444,40 @@ def print_deviations_plot_heatmaps(args, Q0, mc, mb, mt, threshold, output, hopp
 
     # Extra plots for mass thresholds (charm and bottom)
     mass_tmpfiles = []
-    for flavor, mass, label in [(4, mc, 'charm'), (5, mb, 'bottom')]:
-        Qvals_linear = np.linspace(mass, 4*mass, nbins)
-        deviation = np.zeros((len(Qvals_linear), len(xvals)))
-        for i, Q in enumerate(Qvals_linear):
-            for j, x in enumerate(xvals):
-                hoppet_val = hp.Eval(x, Q)[flavor + 6]
-                lhapdf_val = p_lhapdf.xfxQ(flavor, x, Q)
-                if abs(hoppet_val) > 0:
-                    rel_diff = abs((lhapdf_val - hoppet_val) / hoppet_val)
-                else:
-                    rel_diff = 0.0
-                deviation[i, j] = rel_diff
+    if VFN:
+        for flavor, mass, label in [(4, mc, 'charm'), (5, mb, 'bottom')]:
+            Qvals_linear = np.linspace(mass, 4*mass, nbins)
+            deviation = np.zeros((len(Qvals_linear), len(xvals)))
+            for i, Q in enumerate(Qvals_linear):
+                for j, x in enumerate(xvals):
+                    hoppet_val = hp.Eval(x, Q)[flavor + 6]
+                    lhapdf_val = p_lhapdf.xfxQ(flavor, x, Q)
+                    if abs(hoppet_val) > 0:
+                        rel_diff = abs((lhapdf_val - hoppet_val) / hoppet_val)
+                    else:
+                        rel_diff = 0.0
+                    deviation[i, j] = rel_diff
 
-        plt.figure(figsize=(8, 6))
-        X, Y = np.meshgrid(xvals, Qvals_linear)
-        plt.pcolormesh(X, Y, deviation, norm=norm, shading='auto', cmap=cmap)
-        cbar = plt.colorbar(label='|(hoppet - lhapdf) / hoppet|', boundaries=bounds, ticks=bounds)
-        cbar.ax.set_yticklabels([percent_label(b) for b in bounds])
-        plt.xscale('log')
-        plt.xlabel('x')
-        plt.ylabel('Q [GeV]')
-        plt.title(f'Mass threshold region ({label}): flavor {flavor}')
-        plt.figtext(0.5, 0.01, info_str, ha='center', va='bottom', fontsize=10, color='grey', alpha=0.5)
-        plt.figtext(0.98, 0.98, f"hoppet v{hoppet_ver}", ha='right', va='top', fontsize=10, color='grey', alpha=0.5)
-        plt.xticks(xticks, [format_xtick(tick) for tick in xticks])
-        plt.tight_layout()
-        tmpfile = f"{output}_mass_{label}_{flavor}.pdf"
-        with PdfPages(tmpfile) as pdf_pages:
-            pdf_pages.savefig()
-        plt.close()
-        mass_tmpfiles.append(tmpfile)
-    for tmpfile in mass_tmpfiles:
-        merger.append(tmpfile)
+            plt.figure(figsize=(8, 6))
+            X, Y = np.meshgrid(xvals, Qvals_linear)
+            plt.pcolormesh(X, Y, deviation, norm=norm, shading='auto', cmap=cmap)
+            cbar = plt.colorbar(label='|(hoppet - lhapdf) / hoppet|', boundaries=bounds, ticks=bounds)
+            cbar.ax.set_yticklabels([percent_label(b) for b in bounds])
+            plt.xscale('log')
+            plt.xlabel('x')
+            plt.ylabel('Q [GeV]')
+            plt.title(f'Mass threshold region ({label}): flavor {flavor}')
+            plt.figtext(0.5, 0.01, info_str, ha='center', va='bottom', fontsize=10, color='grey', alpha=0.5)
+            plt.figtext(0.98, 0.98, f"hoppet v{hoppet_ver}", ha='right', va='top', fontsize=10, color='grey', alpha=0.5)
+            plt.xticks(xticks, [format_xtick(tick) for tick in xticks])
+            plt.tight_layout()
+            tmpfile = f"{output}_mass_{label}_{flavor}.pdf"
+            with PdfPages(tmpfile) as pdf_pages:
+                pdf_pages.savefig()
+            plt.close()
+            mass_tmpfiles.append(tmpfile)
+        for tmpfile in mass_tmpfiles:
+            merger.append(tmpfile)
 
     # Add plot for alphas relative deviation
     Qvals_alpha_plot = np.logspace(np.log10(Qmin), np.log10(Qmax), nbins*10)
@@ -506,7 +540,7 @@ def plot_flavor(args):
     plt.ylabel('Q [GeV]')
     plt.title(f'|Rel. deviation| for flavor {flavor}')
     plt.figtext(0.5, 0.01, info_str, ha='center', va='bottom', fontsize=10, color='grey', alpha=0.5)
-    hoppet_ver = version()
+    hoppet_ver = hp.version()
     plt.figtext(0.98, 0.98, f"hoppet v{hoppet_ver}", ha='right', va='top', fontsize=10, color='grey', alpha=0.5)
     plt.xticks(xticks, [format_xtick(tick) for tick in xticks])
     plt.tight_layout()
@@ -548,14 +582,6 @@ def percent_label(b):
         return '   '
     else:
         return f'{b*100:.2f}%'
-
-def version():
-    import subprocess
-    try:
-        out = subprocess.check_output(['hoppet-config', '--version'], universal_newlines=True)
-        return out.strip()
-    except Exception:
-        return "unknown"
 
 if __name__ == "__main__":
     start_time = time.time()
